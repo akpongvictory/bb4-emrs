@@ -1,8 +1,8 @@
-import http from "node:http";
+import { createServer } from "node:http";
 
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5000;
 
-const server = http.createServer((req, res) => {
+const server = createServer((req, res) => {
   if (req.url === "/api/health" && req.method === "GET") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: "ok", service: "bb4-emrs-server" }));

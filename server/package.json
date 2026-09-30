@@ -2,10 +2,20 @@
   "name": "bb4-emrs-server",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
-  "main": "src/app.js",
+  "type": "commonjs",
+  "main": "dist/app.js",
   "scripts": {
-    "dev": "node --watch --env-file-if-exists=.env src/app.js",
-    "start": "node --env-file-if-exists=.env src/app.js"
+    "dev": "tsx watch --env-file-if-exists=.env src/app.ts",
+    "build": "tsc",
+    "start": "node --env-file-if-exists=.env dist/app.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
