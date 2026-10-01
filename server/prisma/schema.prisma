@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// A healthcare facility (tenant). Every operational record will belong to one.
+model Facility {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  code         String   @unique
+  email        String?
+  phone        String?
+  address      String?
+  logoUrl      String?
+  currencyCode String   @default("NGN")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  departments Department[]
+  memberships FacilityMembership[]
+}
+
+// A person who logs in. Facility access comes from memberships, not from this table.
+model User {
+  id              String   @id @default(uuid()) @db.Uuid
+  email           String   @unique
+  passwordHash    String
+  firstName       String
+  lastName        String
+  phone           String?
+  isPlatformAdmin Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  memberships FacilityMembership[]
+}
+
+// A department inside one facility (OPD, Laboratory, Pharmacy, ...).
+model Department {
+  id         String   @id @default(uuid()) @db.Uuid
+  facilityId String   @db.Uuid
+  name       String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility    Facility             @relation(fields: [facilityId], references: [id])
+  memberships FacilityMembership[]
+
+  @@unique([facilityId, name])
+  @@index([facilityId])
+}
+
+// Links one user to one facility. Roles are assigned here.
+model FacilityMembership {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  facilityId   String   @db.Uuid
+  departmentId String?  @db.Uuid
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user       User             @relation(fields: [userId], references: [id])
+  facility   Facility         @relation(fields: [facilityId], references: [id])
+  department Department?      @relation(fields: [departmentId], references: [id])
+  roles      MembershipRole[]
+
+  @@unique([userId, facilityId])
+  @@index([facilityId])
+}
+
+// System-defined role (Doctor, Nurse, ...). Seeded, not created by users yet.
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  name        String
+  description String?
+  isSystem    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  permissions RolePermission[]
+  memberships MembershipRole[]
+}
+
+// One capability, for example "patients.view" or "billing.receive_payment".
+model Permission {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  module      String
+  description String?
+  createdAt   DateTime @default(now())
+
+  roles RolePermission[]
+}
+
+model RolePermission {
+  roleId       String @db.Uuid
+  permissionId String @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+// A role held by a membership, so it only counts inside that facility.
+model MembershipRole {
+  membershipId String   @db.Uuid
+  roleId       String   @db.Uuid
+  assignedAt   DateTime @default(now())
+
+  membership FacilityMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  role       Role               @relation(fields: [roleId], references: [id])
+
+  @@id([membershipId, roleId])
+  @@index([roleId])
+}
