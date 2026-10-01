@@ -10,6 +10,7 @@ Status: Day 3. Entities follow Spec section 34. Fields are designed on each modu
 - Keep charge, invoice, payment, balance, adjustment and refund as separate records.
 - Store money as fixed-precision decimals. Calculate on the server only.
 - Write audit records for important create, update, cancel and reverse actions.
+- Use UUIDs for internal IDs. Store human-facing numbers (patientNumber, receipt number, claim number) in separate fields.
 
 ## 2. Domains and entities
 
@@ -31,7 +32,8 @@ Status: Day 3. Entities follow Spec section 34. Fields are designed on each modu
 ## 3. Key relationships
 
 - Facility has many memberships, departments, patients, services, tariffs, payers, settings.
-- User has many FacilityMemberships. Each membership carries one role for one facility.
+- User has many FacilityMemberships. Each membership holds one or more Roles for that one facility (through MembershipRole). Effective permissions in a facility are the combined permissions of the roles on that membership.
+- A role held in Facility A grants nothing in Facility B.
 - Patient belongs to one facility and has many encounters. The same real person registered at two facilities is two Patient records.
 - Encounter belongs to a patient and a facility. It has appointments, queue entries, vitals, notes, diagnoses, orders, prescriptions, procedures, referrals and charges.
 - Orders and prescriptions belong to an encounter. Results and dispensing records belong to their order or prescription.
@@ -54,9 +56,11 @@ Status: Day 3. Entities follow Spec section 34. Fields are designed on each modu
 
 ## 5. Identity model
 
-    User --< FacilityMembership >-- Facility
-                   |
-                  Role --< RolePermission >-- Permission
+     User (isPlatformAdmin) --< FacilityMembership >-- Facility
+                                      |
+                               MembershipRole >-- Role --< RolePermission >-- Permission
+
+Authorization checks: User + Membership + Role + Permission + Requested resource.
 
 ## 6. Audit record
 
@@ -64,7 +68,6 @@ Fields: facilityId, userId, action, entityType, entityId, timestamp, change summ
 
 ## 7. Items to settle at schema time
 
-- Role scope (system-wide vs facility-specific).
-- Internal ID type.
 - Payment allocation rules (Days 64 to 67).
 - Whether to reserve source-system fields for future legacy migration (Spec section 30.15).
+- Room for facility-specific custom roles later (proposal: nullable facilityId on Role, null meaning system role; not built now).

@@ -29,3 +29,5 @@ Day 4 — Database Foundation
 
 ## Git Commit
 docs: add architecture, domain model and multi-facility docs
+## Amendment (Sept 30, 2026)
+Role scope, UUID internal IDs and isPlatformAdmin decided. Applied to domain-model.md, multi-facility.md, architecture.md and documentation-notes.md.

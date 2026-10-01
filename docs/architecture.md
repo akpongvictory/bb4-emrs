@@ -39,7 +39,7 @@ The frontend never decides security, prices, totals or payment state.
 
 1. Authenticate: read the session cookie, load the user.
 2. Resolve facility: take the active facility from the session and confirm the user has an active membership.
-3. Authorize: check the route's required permission for that membership.
+3. Authorize: combine the permissions of the roles on the user's membership for the active facility, then check the route's required permission.
 4. Validate: parse body, query and params with Zod.
 5. Execute: the service runs business rules and Prisma queries, always scoped by facilityId.
 6. Audit: write the audit record in the same transaction as the change.
