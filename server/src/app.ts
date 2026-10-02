@@ -1,17 +1,34 @@
-import { createServer } from "node:http";
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import { env } from "./config/env";
+import { errorHandler } from "./middleware/errorHandler";
+import { notFound } from "./middleware/notFound";
+import { requestLogger } from "./middleware/requestLogger";
+import { healthRouter } from "./modules/health/health.routes";
 
-const PORT = Number(process.env.PORT) || 5000;
+export function createApp() {
+  const app = express();
 
-const server = createServer((req, res) => {
-  if (req.url === "/api/health" && req.method === "GET") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", service: "bb4-emrs-server" }));
-    return;
+  if (env.isProduction) {
+    app.set("trust proxy", 1);
   }
-  res.writeHead(404, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ error: "Not found" }));
-});
 
-server.listen(PORT, () => {
-  console.log(`BB4 EMRs server running on port ${PORT}`);
+  app.use(requestLogger);
+  app.use(helmet());
+  app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
+  app.use(express.json({ limit: "1mb" }));
+
+  app.use("/api/health", healthRouter);
+
+  app.use(notFound);
+  app.use(errorHandler);
+
+  return app;
+}
+
+const app = createApp();
+
+app.listen(env.PORT, () => {
+  console.log(`Server running on port ${env.PORT}`);
 });

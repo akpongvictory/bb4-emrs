@@ -1,5 +1,5 @@
 import "dotenv/config";
-import bcrypt from "bcryptjs";
+import { hashPassword } from "../src/utils/password";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import {
@@ -67,6 +67,16 @@ async function main() {
     }
   }
 
+  // Remove permissions that are no longer defined
+  // (role links are removed automatically).
+  await prisma.permission.deleteMany({
+    where: {
+      key: {
+        notIn: Array.from(permissionIdByKey.keys()),
+      },
+    },
+  });
+
   // 2. Roles and their permissions (the seed file is the source of truth for system roles)
   const roleIdByKey = new Map<string, string>();
   for (const role of roles) {
@@ -106,7 +116,7 @@ async function main() {
   }
 
   // 4. Users, memberships and facility-scoped roles
-  const passwordHash = await bcrypt.hash(demoPassword, 12);
+  const passwordHash = await hashPassword(demoPassword);
   for (const userSeed of demoUsers) {
     const user = await prisma.user.upsert({
       where: { email: userSeed.email },

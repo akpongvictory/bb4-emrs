@@ -1,0 +1,3 @@
+- Facility-specific custom roles and additional permissions (RBAC is permission-based to allow this).
+- Resource scope beyond facility level (department-level or assigned-patient access), design at Day 9.
+- Backend host selection (Render, Railway or similar) at deployment preparation.

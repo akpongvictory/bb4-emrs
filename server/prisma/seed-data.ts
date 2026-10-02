@@ -4,7 +4,7 @@
 // Every permission is "<module>.<action>".
 export const permissionGroups: Record<string, string[]> = {
   facility: ["view", "manage"],
-  users: ["view", "manage"],
+  users: ["view", "create", "update", "deactivate", "assign_roles", "reactivate"],
   departments: ["view", "manage"],
   patients: ["view", "create", "update"],
   appointments: ["view", "create", "update"],
@@ -12,6 +12,7 @@ export const permissionGroups: Record<string, string[]> = {
   queue: ["view", "manage"],
   vitals: ["view", "create", "update"],
   clinical_notes: ["view", "create", "update"],
+  nursing_notes: ["view", "create", "update"],
   diagnoses: ["view", "create", "update"],
   orders: ["view", "create", "cancel"],
   prescriptions: ["view", "create", "cancel"],

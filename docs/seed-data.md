@@ -32,4 +32,7 @@ Source of truth: server/prisma/seed-data.ts (permissions, roles, role-permission
 | multi.doctor@demo.bb4.test | A: Doctor; B: Doctor + Facility Admin |
 
 ## Starter permission matrix
-The role-to-permission matrix is a starter derived from Spec section 7. It needs review by a domain owner before the Day 9 enforcement work.
+Derived from Spec section 7 and the Oct 1 clarifications. Review before Day 9 enforcement.
+- Facility Admin: facility, users (view, create, update, deactivate, assign_roles), departments, services, tariffs, payers, reports, audit, dashboard, encounter reopen. No clinical resources.
+- Front Desk: patients (view, create, update), appointments, encounters (view, create), queue, payers (view), billing.view_status. No clinical notes or nursing notes.
+- Nursing documentation is its own resource (nursing_notes). Doctors and Specialists can view it. Nurses write it and can view physician notes.
