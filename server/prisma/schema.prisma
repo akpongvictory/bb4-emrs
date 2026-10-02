@@ -23,6 +23,7 @@ model Facility {
 
   departments Department[]
   memberships FacilityMembership[]
+  sessions    Session[]
 }
 
 // A person who logs in. Facility access comes from memberships, not from this table.
@@ -39,6 +40,7 @@ model User {
   updatedAt       DateTime @updatedAt
 
   memberships FacilityMembership[]
+  sessions    Session[]
 }
 
 // A department inside one facility (OPD, Laboratory, Pharmacy, ...).
@@ -122,4 +124,19 @@ model MembershipRole {
 
   @@id([membershipId, roleId])
   @@index([roleId])
+}
+
+// One row per sign-in. The JWT cookie only carries this id.
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @db.Uuid
+  activeFacilityId String?   @db.Uuid
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+
+  user           User      @relation(fields: [userId], references: [id])
+  activeFacility Facility? @relation(fields: [activeFacilityId], references: [id])
+
+  @@index([userId])
 }

@@ -42,3 +42,9 @@ These supersede any conflicting earlier interpretation.
 - Logs are JSON lines. Request logs never include bodies or query strings.
 - Health: GET /api/health (liveness), GET /api/health/ready (database check, 503 on failure).
 - Error handler maps AppError, Zod errors (400), malformed JSON (400), Prisma P2002 (409) and P2025 (404), and returns a generic 500 for anything else.
+## Day 7 authentication notes (Oct 2, 2026)
+- Full flow in docs/auth-flow.md. Session table added (migration add_sessions).
+- The JWT carries only the session id. Active facility lives on the session row, so switching facility updates the row and does not reissue the cookie.
+- Authorization data (roles, permissions) is read from the database on every request, never from the token or the client.
+- Origin check on state-changing requests plus SameSite=Lax is the CSRF defence.
+- Open: cookie domain strategy for deployment (same registrable domain or an /api proxy), session lifetime, login audit records.
