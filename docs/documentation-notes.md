@@ -48,3 +48,8 @@ These supersede any conflicting earlier interpretation.
 - Authorization data (roles, permissions) is read from the database on every request, never from the token or the client.
 - Origin check on state-changing requests plus SameSite=Lax is the CSRF defence.
 - Open: cookie domain strategy for deployment (same registrable domain or an /api proxy), session lifetime, login audit records.
+## Decisions (Oct 2, 2026)
+- Day 9A (User Management) and Day 11A (smoke deployment) added to the plan. See development-plan.md.
+- Staff onboarding: temporary password, forced change at first login, no email provider yet, Argon2id hashes only.
+- Physician notes (clinical_notes) and nursing notes (nursing_notes) are separate protected resources. No automatic nurse-to-physician or doctor-to-nursing access. Seed matrix updated.
+- Resource scope for the MVP is the active facility. The Day 9 permission check is one function, authorize(auth, permission, resource?), with the resource argument reserved so department or assigned-patient scopes can be added without changing callers.

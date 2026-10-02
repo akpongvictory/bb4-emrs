@@ -1,3 +1,7 @@
 - Facility-specific custom roles and additional permissions (RBAC is permission-based to allow this).
 - Resource scope beyond facility level (department-level or assigned-patient access), design at Day 9.
 - Backend host selection (Render, Railway or similar) at deployment preparation.
+- Email invitation and password-reset flow (auth code stays extensible for it)
+- Finer resource scopes: department, assigned patient, specialty
+- Facility-configurable policy for cross-access between physician and nursing notes
+- Platform-level facility onboarding (create facility and first Facility Admin); not yet scheduled

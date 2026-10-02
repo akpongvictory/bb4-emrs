@@ -83,16 +83,17 @@ export const roles: RoleSeed[] = [
       procedures: "*", referrals: "*",
     },
   },
-  {
-    key: "nurse",
-    name: "Nurse",
-    description: "Vitals, nursing notes, queues and permitted clinical information.",
-    grants: {
-      patients: ["view"], appointments: ["view"], encounters: ["view", "update"],
-      queue: "*", vitals: "*", clinical_notes: ["view", "create"],
-      orders: ["view"], prescriptions: ["view"], procedures: ["view"],
-    },
+{
+  key: "nurse",
+  name: "Nurse",
+  description: "Vitals, nursing notes, queues and permitted clinical information.",
+  grants: {
+    patients: ["view"], appointments: ["view"], encounters: ["view", "update"],
+    queue: "*", vitals: "*", nursing_notes: "*", clinical_notes: ["create"],
+    orders: ["view"], prescriptions: ["view"], procedures: ["view"],
   },
+},
+
   {
     key: "front_desk",
     name: "Front Desk",
