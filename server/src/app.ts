@@ -9,6 +9,7 @@ import { healthRouter } from "./modules/health/health.routes";
 import cookieParser from "cookie-parser";
 import { originCheck } from "./middleware/originCheck";
 import { authRouter } from "./modules/auth/auth.routes";
+import { facilitiesRouter } from "./modules/facilities/facilities.routes";
 
 export function createApp() {
   const app = express();
@@ -26,7 +27,8 @@ export function createApp() {
 
   app.use("/api/health", healthRouter);
   app.use("/api/auth", authRouter);
-  
+  app.use("/api/facilities", facilitiesRouter);
+
   app.use(notFound);
   app.use(errorHandler);
 

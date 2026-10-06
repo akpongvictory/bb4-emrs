@@ -53,3 +53,7 @@ These supersede any conflicting earlier interpretation.
 - Staff onboarding: temporary password, forced change at first login, no email provider yet, Argon2id hashes only.
 - Physician notes (clinical_notes) and nursing notes (nursing_notes) are separate protected resources. No automatic nurse-to-physician or doctor-to-nursing access. Seed matrix updated.
 - Resource scope for the MVP is the active facility. The Day 9 permission check is one function, authorize(auth, permission, resource?), with the resource argument reserved so department or assigned-patient scopes can be added without changing callers.
+## Day 9 enforcement notes
+- authorize() is the single permission check. requirePermission wraps it for routes.
+- Proving ground endpoints: GET /api/facilities/current (facility.view) and GET /api/facilities/current/departments (departments.view). Facility Admin passes both. Management passes only the first. Clinical roles pass neither.
+- No requirePlatformAdmin middleware yet, because no platform routes exist. It arrives with platform facility onboarding.

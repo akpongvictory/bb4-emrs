@@ -23,7 +23,7 @@ export const permissionGroups: Record<string, string[]> = {
   referrals: ["view", "create", "update"],
   services: ["view", "manage"],
   tariffs: ["view", "manage"],
-  billing: ["view", "create_charge", "receive_payment", "adjust", "reverse"],
+  billing: ["view", "view_status", "create_charge", "receive_payment", "adjust", "reverse"],
   payers: ["view", "manage"],
   claims: ["view", "create", "update", "submit", "import"],
   reports: ["view", "revenue", "export"],
@@ -89,18 +89,19 @@ export const roles: RoleSeed[] = [
   description: "Vitals, nursing notes, queues and permitted clinical information.",
   grants: {
     patients: ["view"], appointments: ["view"], encounters: ["view", "update"],
-    queue: "*", vitals: "*", nursing_notes: "*", clinical_notes: ["create"],
+    queue: "*", vitals: "*", nursing_notes: "*",
     orders: ["view"], prescriptions: ["view"], procedures: ["view"],
   },
 },
 
-  {
+    {
     key: "front_desk",
     name: "Front Desk",
     description: "Registration, patient search, appointments, encounter creation and queue.",
     grants: {
       patients: ["view", "create", "update"], appointments: "*",
       encounters: ["view", "create"], queue: "*", payers: ["view"],
+      billing: ["view_status"],
     },
   },
   {
