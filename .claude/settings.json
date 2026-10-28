@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm run build)",
+      "Bash(npx prisma validate)"
+    ],
+    "deny": [
+      "Read(./server/.env)",
+      "Read(./client/.env)",
+      "Bash(git push --force*)",
+      "Bash(git push * main)",
+      "Bash(git reset --hard*)",
+      "Bash(npx prisma migrate reset*)",
+      "Bash(npx prisma db push*)"
+    ]
+  }
+}
